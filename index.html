@@ -16,6 +16,10 @@
   </head>
   <body>
     <main>
+      <div id="preloader">
+        <div class="spinner"></div>
+      </div>
+      <div id="contente">
       <div class="vignette"></div>
         <!-- <img src="cloud/test.png" data-speedx="0.3" data-speedy="0.38" data-speedz="0" data-rotation="0" 
         data-distance="0" class="parallax bge-img"> -->
@@ -104,10 +108,23 @@
         </div>
 
         <!-- <img src="cloud/sun_rays.png" class="sun"> -->
-      </div></div>
+        </div></div>
+      </div>
     </main>
 
     <script>
+const MIN_LOADING_TIME = 1000; // 1000 ms = 1 sekunda
+  const start = Date.now();
+
+  window.addEventListener("load", () => {
+    const elapsed = Date.now() - start;
+    const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
+
+    setTimeout(() => {
+      document.getElementById("preloader").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    }, delay);
+  });
      window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('continue-text').classList.add('show');
