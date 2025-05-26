@@ -23,32 +23,43 @@ window.addEventListener("load", () => {
 function initializeApp() {
   // Vyber elementy až po zobrazení obsahu
   const screens = document.querySelectorAll(".content");
-  let currentScreen = 0;
-  let isScrolling = false;
+let currentScreen = 0;
+let isScrolling = true;
 
-  const continueText = document.getElementById('continue-text');
-  if (continueText) {
-    setTimeout(() => {
-      continueText.classList.add('show');
-    }, 4000);
-  }
+const continueText = document.getElementById('continue-text');
+if (continueText) {
+  setTimeout(() => {
+    continueText.classList.add('show');
+  }, 4000);
+}
 
+// Inicializuj všetky okrem prvej ako skryté
+screens.forEach((screen, i) => {
+  gsap.set(screen, {
+    opacity: i === 0 ? 1 : 0,
+    pointerEvents: i === 0 ? 'auto' : 'none'
+  });
+});
+
+function showScreen(index) {
   screens.forEach((screen, i) => {
-    gsap.set(screen, {
-      opacity: i === 0 ? 1 : 0,
-      pointerEvents: i === 0 ? 'auto' : 'none'
+    gsap.to(screen, {
+      opacity: i === index ? 1 : 0,
+      pointerEvents: i === index ? 'auto' : 'none',
+      duration: 0.8
     });
   });
+}
 
-  function showScreen(index) {
-    screens.forEach((screen, i) => {
-      gsap.to(screen, {
-        opacity: i === index ? 1 : 0,
-        pointerEvents: i === index ? 'auto' : 'none',
-        duration: 0.8
-      });
-    });
+// Pridaj click listener na celý parent element
+document.querySelector(".text.parallax").addEventListener("click", () => {
+  currentScreen++;
+  if (currentScreen >= screens.length) {
+    currentScreen = 0; // 🔁 cyklicky späť na začiatok
   }
+  showScreen(currentScreen);
+});
+
 
   window.addEventListener("wheel", (e) => {
     if (isScrolling) return;
