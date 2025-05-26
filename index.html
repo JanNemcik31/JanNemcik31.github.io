@@ -112,77 +112,7 @@
       </div>
     </main>
 
-    <script>
-const MIN_LOADING_TIME = 1000; // 1000 ms = 1 sekunda
-  const start = Date.now();
 
-  window.addEventListener("load", () => {
-    const elapsed = Date.now() - start;
-    const delay = Math.max(0, MIN_LOADING_TIME - elapsed);
-
-    setTimeout(() => {
-      document.getElementById("preloader").style.display = "none";
-      document.getElementById("content").style.display = "block";
-    }, delay);
-  });
-     window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('continue-text').classList.add('show');
-  }, 4000);
-
-  // Nastav všetky na opacity 0 na začiatku, okrem prvého
-  screens.forEach((screen, i) => {
-    gsap.set(screen, {opacity: i === 0 ? 1 : 0, pointerEvents: i === 0 ? 'auto' : 'none'});
-  });
-});
-
-let currentScreen = 0;
-const screens = document.querySelectorAll(".content");
-let isScrolling = false;
-
-function showScreen(index) {
-  screens.forEach((screen, i) => {
-    if (i === index) {
-      gsap.to(screen, {opacity: 1, duration: 0.8, pointerEvents: 'auto'});
-    } else {
-      gsap.to(screen, {opacity: 0, duration: 0.8, pointerEvents: 'none'});
-    }
-  });
-}
-
-// Scrollovanie
-window.addEventListener("wheel", (e) => {
-  if (isScrolling) return;
-  isScrolling = true;
-
-  if (e.deltaY > 0) {
-    currentScreen = Math.min(currentScreen + 1, screens.length - 1);
-  } else {
-    currentScreen = Math.max(currentScreen - 1, 0);
-  }
-
-  showScreen(currentScreen);
-
-  setTimeout(() => {
-    isScrolling = false;
-  }, 800);
-});
-
-// Pridanie podpory kliknutia myšou (napr. klik pre krok vpred)
-window.addEventListener("click", () => {
-  if (isScrolling) return;
-  isScrolling = true;
-
-  currentScreen = Math.min(currentScreen + 1, screens.length - 1);
-  showScreen(currentScreen);
-
-  setTimeout(() => {
-    isScrolling = false;
-  }, 800);
-});
-
-
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
     <script src="js/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
