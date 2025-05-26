@@ -1,4 +1,4 @@
-const MIN_LOADING_TIME = 1000;
+const MIN_LOADING_TIME = 500;
 const start = Date.now();
 
 window.addEventListener("load", () => {
@@ -74,57 +74,72 @@ function initializeApp() {
   });
 
   const parallax_el = document.querySelectorAll(".parallax");
-  let xValue = 0, yValue = 0, rotateDegree = 0;
+let xValue = 0, yValue = 0, rotateDegree = 0;
 
-  function update(cursorX) {
-    parallax_el.forEach((el) => {
-      const speedx = +el.dataset.speedx;
-      const speedy = +el.dataset.speedy;
-      const speedz = +el.dataset.speedz;
-      const rotateSpeed = +el.dataset.rotation;
+function update(cursorX) {
+  parallax_el.forEach((el) => {
+    const speedx = +el.dataset.speedx;
+    const speedy = +el.dataset.speedy;
+    const speedz = +el.dataset.speedz;
+    const rotateSpeed = +el.dataset.rotation;
 
-      const isInLeft = parseFloat(getComputedStyle(el).left) < window.innerWidth / 2 ? 1 : -1;
-      const zValue = (cursorX - parseFloat(getComputedStyle(el).left)) * isInLeft * 0.15;
+    const isInLeft = parseFloat(getComputedStyle(el).left) < window.innerWidth / 2 ? 1 : -1;
+    const zValue = (cursorX - parseFloat(getComputedStyle(el).left)) * isInLeft * 0.15;
 
-      el.style.transform = `
-        perspective(1200px)
-        translateZ(${zValue * speedz}px)
-        rotateY(${rotateDegree * rotateSpeed}deg)
-        translateX(calc(-50% + ${-xValue * speedx}px))
-        translateY(calc(-50% + ${-yValue * speedy}px))
-      `;
-    });
-  }
+    el.style.transform = `
+      perspective(1200px)
+      translateZ(${zValue * speedz}px)
+      rotateY(${rotateDegree * rotateSpeed}deg)
+      translateX(calc(-50% + ${-xValue * speedx}px))
+      translateY(calc(-50% + ${-yValue * speedy}px))
+    `;
+  });
+}
 
-  window.addEventListener("mousemove", (e) => {
-    if (timeline.isActive()) return;
+// 🎯 Myš (desktop)
+window.addEventListener("mousemove", (e) => {
+  if (timeline.isActive()) return;
 
-    xValue = e.clientX - window.innerWidth / 2;
-    yValue = e.clientY - window.innerHeight / 2;
-    rotateDegree = (xValue / (window.innerWidth / 2)) * 20;
+  xValue = e.clientX - window.innerWidth / 2;
+  yValue = e.clientY - window.innerHeight / 2;
+  rotateDegree = (xValue / (window.innerWidth / 2)) * 20;
 
-    update(e.clientX);
+  update(e.clientX);
+});
+
+// 📱 Dotyk (mobil, tablet)
+window.addEventListener("touchmove", (e) => {
+  if (timeline.isActive()) return;
+  if (e.touches.length === 0) return;
+
+  const touch = e.touches[0];
+  xValue = touch.clientX - window.innerWidth / 2;
+  yValue = touch.clientY - window.innerHeight / 2;
+  rotateDegree = (xValue / (window.innerWidth / 2)) * 20;
+
+  update(touch.clientX);
+}, { passive: true });
+
+let timeline = gsap.timeline();
+
+Array.from(parallax_el)
+  .filter(el => !el.classList.contains("text"))
+  .forEach(el => {
+    const distance = parseFloat(el.dataset.distance);
+    timeline.from(el, {
+      top: `${el.offsetHeight / 2 + distance}px`,
+      duration: 2.5,
+      ease: "power3.out",
+    }, "1 ");
   });
 
-  let timeline = gsap.timeline();
+timeline.from(".text h1", {
+  y: window.innerHeight - document.querySelector(".text h1").getBoundingClientRect().top,
+  duration: 2,
+}, "2.5").from(".text h2", {
+  y: -150,
+  opacity: 0,
+  duration: 1.5,
+}, "2");
 
-  Array.from(parallax_el)
-    .filter(el => !el.classList.contains("text"))
-    .forEach(el => {
-      const distance = parseFloat(el.dataset.distance);
-      timeline.from(el, {
-        top: `${el.offsetHeight / 2 + distance}px`,
-        duration: 2.5,
-        ease: "power3.out",
-      }, "1 ");
-    });
-
-  timeline.from(".text h1", {
-    y: window.innerHeight - document.querySelector(".text h1").getBoundingClientRect().top,
-    duration: 2,
-  }, "2.5").from(".text h2", {
-    y: -150,
-    opacity: 0,
-    duration: 1.5,
-  }, "2");
 }
