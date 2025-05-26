@@ -188,3 +188,8 @@ body {
   @keyframes spin {
     to { transform: rotate(-360deg); }
   }
+  body {
+    touch-action: none;
+    user-select: none;
+    overflow: hidden; 
+  }
