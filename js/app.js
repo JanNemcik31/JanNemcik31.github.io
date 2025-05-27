@@ -21,8 +21,9 @@ window.addEventListener("load", () => {
 });
 
 function initializeApp() {
-  // Vyber elementy až po zobrazení obsahu
-  const screens = document.querySelectorAll(".content");
+
+// Vyber elementy až po zobrazení obsahu
+const screens = document.querySelectorAll(".content");
 let currentScreen = 0;
 let isScrolling = true;
 
@@ -52,39 +53,19 @@ function showScreen(index) {
 }
 
 // Pridaj click listener na celý parent element
-document.querySelector(".text.parallax").addEventListener("click", () => {
-  currentScreen++;
-  if (currentScreen >= screens.length) {
-    currentScreen = 0; // 🔁 cyklicky späť na začiatok
-  }
-  showScreen(currentScreen);
-});
-
-
-  window.addEventListener("wheel", (e) => {
-    if (isScrolling) return;
-    isScrolling = true;
-
-    if (e.deltaY > 0) {
-      currentScreen = Math.min(currentScreen + 1, screens.length - 1);
-    } else {
-      currentScreen = Math.max(currentScreen - 1, 0);
+document.addEventListener("click", () => {
+    currentScreen++;
+    if (currentScreen >= screens.length) {
+      currentScreen = 0;
     }
-
     showScreen(currentScreen);
-    setTimeout(() => isScrolling = false, 800);
   });
+  
+/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////PARALLAX//PARALLAX////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
-  window.addEventListener("click", () => {
-    if (isScrolling) return;
-    isScrolling = true;
-
-    currentScreen = Math.min(currentScreen + 1, screens.length - 1);
-    showScreen(currentScreen);
-    setTimeout(() => isScrolling = false, 800);
-  });
-
-  const parallax_el = document.querySelectorAll(".parallax");
+const parallax_el = document.querySelectorAll(".parallax");
 let xValue = 0, yValue = 0, rotateDegree = 0;
 
 function update(cursorX) {
